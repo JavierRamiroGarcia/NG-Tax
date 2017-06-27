@@ -1,0 +1,12 @@
+Bacteria;	3	domain		
+Bacteria;Bacteroidetes;	905	phylum		119
+Bacteria;Firmicutes;	1672	phylum		119
+Bacteria;Bacteroidetes;Bacteroidia;	912	class		119
+Bacteria;Firmicutes;Clostridia;	1859	class		119
+Bacteria;Bacteroidetes;Bacteroidia;Bacteroidales;	913	order		119
+Bacteria;Firmicutes;Clostridia;Clostridiales;	1863	order		119
+Bacteria;Bacteroidetes;Bacteroidia;Bacteroidales;Bacteroidaceae;	917	family		119
+Bacteria;Firmicutes;Clostridia;Clostridiales;Ruminococcaceae;	2050	family		119
+Bacteria;Bacteroidetes;Bacteroidia;Bacteroidales;Bacteroidaceae;Bacteroides;	918	genus		119
+Bacteria;Firmicutes;Clostridia;Clostridiales;Ruminococcaceae;Faecalibacterium;	2057	genus		119
+

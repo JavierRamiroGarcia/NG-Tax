@@ -1,0 +1,4 @@
+#SampleID	BarcodeSequence	LibraryNumber	Direction	LibraryName	ProjectName	Region	Location	Description
+Sample.talarrubias	AAAAAAAA	01	p	library_test.fastq	library_test	V4	Talarrubias	Sample.talarrubias
+Sample.trigueros	CCCCCCCC	01	p	library_test.fastq	library_test	V4	Trigueros	Sample.trigueros
+
