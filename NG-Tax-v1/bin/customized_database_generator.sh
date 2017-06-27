@@ -13,11 +13,13 @@ mismatches can be provided as optional input.\n
     Required inputs\n
 \n
 -d Reference 16S rRNA database file [fasta]\n
+-t SILVA taxonomy\n
 -k forward-primer sequence, degenerate position between brackets\n
 -p reverse-primer sequence, degenerate position between brackets\n
 -q complementary reversed reverse-primer sequence, degenerate position between brackets\n
 -f NG-Tax customized forward-primer database name\n
 -r NG-Tax customized reverse-primer database name\n
+-x NG-Tax customized taxonomy name\n
 -o forward-read length\n
 -e reverse-read length\n
 \n
@@ -29,12 +31,14 @@ mismatches can be provided as optional input.\n
     Output:\n
 \n
 A database with all sequences that have matching (or allowed mismatching) forward primer \n
-A database with all sequences that have matching (or allowed mismatching) reverse primer \n\n
+A database with all sequences that have matching (or allowed mismatching) reverse primer \n
+A taxonomy file customized for NG-Tax\n\n
 Example of usage:\n
-$0 -d Silva_111_full_unique.fasta -k GTGCCAGC[AC]GCCGCGGTAA -p GGACTAC[ACT][ACG]GGGT[AT]TCTAAT -q ATTAGA[AT]ACCC[TCG][ATG]GTAGTCC -f primer_F515_71_nt_1mm_db -r primer_R806_70_nt_1mm_db -o 71 -e 70 -y primer_F515_1mm -z primer_R806_1mm\n\n
+$0 -d SILVA_128_SSURef_tax_silva.fasta -t tax_slv_ssu_128.txt -k GTGCCAGC[AC]GCCGCGGTAA -p GGACTAC[ACT][ACG]GGGT[AT]TCTAAT -q ATTAGA[AT]ACCC[TCG][ATG]GTAGTCC -f primer_F515_71_nt_1mm_db -r primer_R806_70_nt_1mm_db -x tax_slv_ssu_128_NG_Tax -o 71 -e 70 -y primer_F515_1mm -z primer_R806_1mm\n\n
 output:\n
 primer_F515_71_nt_1mm_db\n
-primer_R806_70_nt_1mm_db\n\n
+primer_R806_70_nt_1mm_db\n
+tax_slv_ssu_128_NG_Tax\n\n
 --- End of USAGE ---\n
 "
 
@@ -44,7 +48,7 @@ if [[ "$1" == "-h" ]]
   then
     echo -e $usage
     exit 0
-elif [[ $# -ne 16 && $# -ne 20 ]]
+elif [[ $# -ne 20 && $# -ne 24 ]]
   then
     echo -e "ERROR: Invalid number of args \nTry $0 -h for help"
     exit 1
@@ -52,11 +56,14 @@ fi
 
 # Assign arguments to variables, check for invalid arguments.
 
-while getopts d:k:p:q:f:r:o:e:y:z: opt
+while getopts d:t:k:p:q:f:r:x:o:e:y:z: opt
   do
   case "$opt" in
     d)
       database_address=${OPTARG}
+      ;;
+    t)
+      taxonomy_address=${OPTARG}
       ;;
     k)
       forward_primer_sequence=${OPTARG}
@@ -72,6 +79,9 @@ while getopts d:k:p:q:f:r:o:e:y:z: opt
       ;;
     r)
       reverse_primer_database_name=${OPTARG}
+      ;;
+    x)
+      taxonomy_name=${OPTARG}
       ;;
     o)
       length_forward_read=${OPTARG}
@@ -110,13 +120,31 @@ elif [[ -n $allowed_reverse_primers && ! -s $allowed_reverse_primers  ]]
 		exit 1
 fi
 
+
 # Generate a temporary database containing complementary reverse sequences.
 
+awk '{ \
+  if(substr($1,1,1)==">"){ \
+    if(NR==1){ \
+      print $0 \
+    } \
+    else{ \
+      print "\n"$0 \
+    } \
+  } \
+  else{ \
+    printf("%s",$0) \
+  } \
+} \
+END{ \
+  printf("\n") \
+}' $database_address | \
 awk '{ \
   if(substr($1,1,1)==">"){ \
     print $1 \
   } \
   else{ \
+    gsub("U","T",$1); \
     for(i=length($1);i!=0;i--){ \
       complementary_reversed_sequence=complementary_reversed_sequence substr($1,i,1) \
     }; \
@@ -131,8 +159,7 @@ awk '{ \
     print $1"\t"complementary_reversed_sequence; \
     complementary_reversed_sequence="" \
   } \
-}' \
-$database_address > "tmp_"$forward_primer_database_name"_"$reverse_primer_database_name
+}' > "tmp_"$forward_primer_database_name"_"$reverse_primer_database_name
 
 
 # Assign length to the NG-Tax customized databases, 10 nucleotides are added to account for insertions.
@@ -182,8 +209,8 @@ if [[ "$allowed_forward_primers" != "" ]]
 
 	then
 
-		strings $allowed_forward_primers > "tmp_"$allowed_forward_primers
-    mv "tmp_"$allowed_forward_primers $allowed_forward_primers
+    bname_allowed_forward_primers=$(basename "$allowed_forward_primers")
+		strings $allowed_forward_primers > $bname_allowed_forward_primers"_non_return_carriage"
 
 		awk  '{ \
       if (FNR==1){ \
@@ -216,9 +243,9 @@ if [[ "$allowed_forward_primers" != "" ]]
 		$forward_primer_database_name \
 		"tmp_"$forward_primer_database_name"_"$reverse_primer_database_name > "db_no_present_in_"$forward_primer_database_name
 
-		rm -f "sequences_allowed_by_mismatch_"$allowed_forward_primers"_"$forward_primer_database_name
+		rm -f "sequences_allowed_by_mismatch_"$bname_allowed_forward_primers"_"$forward_primer_database_name
 
-		for forward_primer_to_check in `awk '{if($1!=""){print $1}}' $allowed_forward_primers`
+		for forward_primer_to_check in  `awk '{if($1!=""){print $1}}' $bname_allowed_forward_primers"_non_return_carriage"`
     do \
       grep -e $forward_primer_to_check'[A-Z]\{'$extra_length_forward_read'\}' -e \>.*  -o  "db_no_present_in_"$forward_primer_database_name | \
 			awk -v v_extra_length_forward_read=$extra_length_forward_read '{ \
@@ -232,11 +259,11 @@ if [[ "$allowed_forward_primers" != "" ]]
             p=0 \
           } \
         } \
-      }'  >> "sequences_allowed_by_mismatch_"$allowed_forward_primers"_"$forward_primer_database_name
+      }'  >> "sequences_allowed_by_mismatch_"$bname_allowed_forward_primers"_"$forward_primer_database_name
     done
 
 	  cat $forward_primer_database_name <( \
-      LANG=en_EN sort "sequences_allowed_by_mismatch_"$allowed_forward_primers"_"$forward_primer_database_name | \
+      LANG=en_EN sort "sequences_allowed_by_mismatch_"$bname_allowed_forward_primers"_"$forward_primer_database_name | \
 		  awk '{ \
         if(name!=$1){ \
           print $1"\n"$2; \
@@ -246,8 +273,9 @@ if [[ "$allowed_forward_primers" != "" ]]
     ) > "allowed_mismatches_"$forward_primer_database_name
 
     cat "allowed_mismatches_"$forward_primer_database_name > $forward_primer_database_name
+    rm -f $bname_allowed_forward_primers"_non_return_carriage"
     rm -f "allowed_mismatches_"$forward_primer_database_name
-    rm -f "sequences_allowed_by_mismatch_"$allowed_forward_primers"_"$forward_primer_database_name
+    rm -f "sequences_allowed_by_mismatch_"$bname_allowed_forward_primers"_"$forward_primer_database_name
     rm -f "db_no_present_in_"$forward_primer_database_name
 fi
 
@@ -257,8 +285,8 @@ if [[ "$allowed_reverse_primers" != "" ]]
 
 	then
 
-		strings $allowed_reverse_primers > "tmp_"$allowed_reverse_primers
-    mv "tmp_"$allowed_reverse_primers $allowed_reverse_primers
+    bname_allowed_reverse_primers=$(basename "$allowed_reverse_primers")
+		strings $allowed_reverse_primers > $bname_allowed_reverse_primers"_non_return_carriage"
 
 		awk  '{ \
       if (FNR==1){ \
@@ -289,9 +317,9 @@ if [[ "$allowed_reverse_primers" != "" ]]
       } \
     }' $reverse_primer_database_name "tmp_"$forward_primer_database_name"_"$reverse_primer_database_name > "db_no_present_in_"$reverse_primer_database_name
 
-		rm -f "sequences_allowed_by_mismatch_"$allowed_reverse_primers"_"$reverse_primer_database_name
+		rm -f "sequences_allowed_by_mismatch_"$bname_allowed_reverse_primers"_"$reverse_primer_database_name
 
-		for reverse_primer_to_check in `awk '{if($1!=""){print $1}}' $allowed_reverse_primers`
+		for reverse_primer_to_check in `awk '{if($1!=""){print $1}}' $bname_allowed_reverse_primers"_non_return_carriage"`
     do \
 			grep -e $reverse_primer_to_check'[A-Z]\{'$extra_length_reverse_read'\}' -e \>.*  -o  "db_no_present_in_"$reverse_primer_database_name | \
 			awk -v v_extra_length_reverse_read=$extra_length_reverse_read '{ \
@@ -305,11 +333,11 @@ if [[ "$allowed_reverse_primers" != "" ]]
             p=0 \
           } \
         } \
-      }' >> "sequences_allowed_by_mismatch_"$allowed_reverse_primers"_"$reverse_primer_database_name
+      }' >> "sequences_allowed_by_mismatch_"$bname_allowed_reverse_primers"_"$reverse_primer_database_name
 		done
 
     cat $reverse_primer_database_name <( \
-      LANG=en_EN sort "sequences_allowed_by_mismatch_"$allowed_reverse_primers"_"$reverse_primer_database_name | \
+      LANG=en_EN sort "sequences_allowed_by_mismatch_"$bname_allowed_reverse_primers"_"$reverse_primer_database_name | \
       awk '{ \
         if(name!=$1){ \
           print $1"\n"$2; \
@@ -319,8 +347,9 @@ if [[ "$allowed_reverse_primers" != "" ]]
     ) > "allowed_mismatches_"$reverse_primer_database_name
 
     cat "allowed_mismatches_"$reverse_primer_database_name > $reverse_primer_database_name
+    rm -f $bname_allowed_reverse_primers"_non_return_carriage"
     rm -f "allowed_mismatches_"$reverse_primer_database_name
-    rm -f "sequences_allowed_by_mismatch_"$allowed_reverse_primers"_"$reverse_primer_database_name
+    rm -f "sequences_allowed_by_mismatch_"$bname_allowed_reverse_primers"_"$reverse_primer_database_name
     rm -f "db_no_present_in_"$reverse_primer_database_name
 fi
 
@@ -329,3 +358,55 @@ wait
 # Remove temporary database containing complementary reverse sequences and extra files
 
 rm "tmp_"$forward_primer_database_name"_"$reverse_primer_database_name
+
+# Create NG-Tax taxonomy file
+
+awk -F "\t" '{ \
+  if(FNR==1){ \
+    x++ \
+  } \
+} \
+{ \
+  if(x==1){ \
+    if(substr($1,1,7)=="Archaea" || substr($1,1,8)=="Bacteria"){ \
+      gsub(" ","_",$1); \
+      array_classification[$1]=$1 \
+    } \
+  } \
+} \
+{ \
+ if(x==2){ \
+  if(substr($1,1,1)==">"){ \
+    sub(">","",$1); \
+    sub(" ","\t"); \
+    gsub(" ","_"); \
+    n=split($2,array_names,";"); \
+    name=array_names[1]";"; \
+    for(i=2;i<n;++i){ \
+      name=name""array_names[i]";" \
+    }; \
+    last_name=name""array_names[n]";"; \
+    if(array_classification[last_name]!=""){ \
+      classification=array_classification[last_name] \
+    } \
+    else{ \
+      classification=array_classification[name] \
+    }; \
+    if(classification!=""){ \
+      split(classification,classification_levels,";"); \
+      if(classification_levels[2]==""){ \
+        classification_levels[2]="p" \
+      }; \
+      if(classification_levels[3]==""){ \
+        classification_levels[3]="c" \
+      }; \
+      if(classification_levels[4]==""){ \
+        classification_levels[4]="o" \
+      }; \
+      if(classification_levels[5]==""){ \
+        classification_levels[5]="f" \
+      }; \
+      if(classification_levels[6]==""){ \
+        classification_levels[6]="g" \
+      }; \
+      print $1"\t"classification_levels[1]";\t__"classification_levels[2]";\t__"classification_levels[3]";\t__"classification_levels[4]";\t__"classification_levels[5]";\t__"classification_levels[6]}}}}' $taxonomy_address $database_address > $taxonomy_name
