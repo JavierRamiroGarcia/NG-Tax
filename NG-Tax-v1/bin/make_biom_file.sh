@@ -72,7 +72,7 @@ elif [[ ! -d $folder_tax_files  ]]
 		exit 1
 fi
 
-map_name=$(basename $map)
+map_name=$(basename $map ".txt")
 
 rm -f $map_name"_otu_database" $map_name"_tax_database" "tmp_sparse_otu_table_"$map_name
 
