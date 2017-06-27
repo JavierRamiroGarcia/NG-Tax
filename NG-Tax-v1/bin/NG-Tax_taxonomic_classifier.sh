@@ -101,18 +101,14 @@ elif [[ ! -s $taxonomy  ]]
     exit 1
 fi
 
-# Remove paths from file names
-
-fsample_name=$(basename $sample_name)
-
 # Create NG-tax directories
 
-mkdir -p  "otus_files_"$fsample_name "clustering_results_files_"$fsample_name  "complementary_tax_files_"$fsample_name "tax_files_"$fsample_name tmp_databases
+mkdir -p  "otus_files_"$sample_name "clustering_results_files_"$sample_name  "complementary_tax_files_"$sample_name "tax_files_"$sample_name tmp_databases
 
 # Create OTU files
 
 cat $sample_name | \
-awk -v v_sample_name=$fsample_name '{ \
+awk -v v_sample_name=$sample_name '{ \
   if(substr($1,1,1)==">"){ \
     name=$1 \
   } \
@@ -132,14 +128,14 @@ rm -f clustering_commands
 
 for i in $(seq -w 0 1 99)
   do
-    echo "/home/jramirogarcia/Work/NG-Tax/usearch -usearch_global otus_files_"$fsample_name"/"$fsample_name"_otus_fr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/forward_primer_db_"$i" -id 0.90 -uc clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_fr_"$i".uc -quiet 2> clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_fr_log_"$i" &" >> clustering_commands
+    echo "/home/jramirogarcia/Work/NG-Tax/usearch -usearch_global otus_files_"$sample_name"/"$sample_name"_otus_fr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/forward_primer_db_"$i" -id 0.90 -uc clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr_"$i".uc -quiet 2> clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr_log_"$i" &" >> clustering_commands
     let "counter++"
     if [ "$counter" -ge "$number_threads" ]
       then
         counter=0
         echo "wait" >> clustering_commands
       fi
-    echo "/home/jramirogarcia/Work/NG-Tax/usearch -usearch_global otus_files_"$fsample_name"/"$fsample_name"_otus_rr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/reverse_primer_db_"$i" -id 0.90 -uc clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_rr_"$i".uc -quiet 2> clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_rr_log_"$i" &" >> clustering_commands
+    echo "/home/jramirogarcia/Work/NG-Tax/usearch -usearch_global otus_files_"$sample_name"/"$sample_name"_otus_rr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/reverse_primer_db_"$i" -id 0.90 -uc clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr_"$i".uc -quiet 2> clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr_log_"$i" &" >> clustering_commands
     let "counter++"
     if [ "$counter" -ge "$number_threads" ]
       then
@@ -154,11 +150,11 @@ sh clustering_commands
 
 rm clustering_commands
 
-cat "clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_fr_"*  > "clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_fr.uc"
+cat "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr_"*  > "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr.uc"
 
-cat "clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_rr_"*  > "clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_rr.uc"
+cat "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr_"*  > "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr.uc"
 
-rm "clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_fr_"* "clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_rr_"*
+rm "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr_"* "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr_"*
 
 
 # Generate taxonomic files
@@ -190,7 +186,7 @@ for identity in 90 92 95 97 98 100
           } \
         } \
       } \
-    }' $taxonomy  "clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_fr.uc" "clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_rr.uc" | \
+    }' $taxonomy  "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr.uc" "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr.uc" | \
     awk '{ \
       print $1"\t"$3$4$5$6"\t"$7$8 \
     }' | \
@@ -224,7 +220,7 @@ for identity in 90 92 95 97 98 100
       if(print_final_line==1){ \
         print ">"read"\t"tax"@"v_identity"@"n"@"n/m \
       } \
-    }' | LANG=en_EN sort  > "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_genera_"$identity"_tax"
+    }' | LANG=en_EN sort  > "complementary_tax_files_"$sample_name"/"$sample_name"_otu_genera_"$identity"_tax"
 
 awk -v v_identity=$identity '{ \
   if (FNR==1){ \
@@ -251,7 +247,7 @@ awk -v v_identity=$identity '{ \
       } \
     } \
   } \
-}' $taxonomy  "clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_fr.uc" "clustering_results_files_"$fsample_name"/"$fsample_name"_results_otus_file_rr.uc" | \
+}' $taxonomy  "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr.uc" "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr.uc" | \
 awk '{\
   print $1"\t"$3$4$5"\t"$6$7 \
 }' | \
@@ -285,7 +281,7 @@ END{ \
   if(print_final_line==1){ \
     print ">"read"\t"tax"@"v_identity"@"n"@"n/m \
   }\
-}' | LANG=en_EN sort > "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_family_"$identity"_tax"
+}' | LANG=en_EN sort > "complementary_tax_files_"$sample_name"/"$sample_name"_otu_family_"$identity"_tax"
 
 
 done
@@ -298,7 +294,7 @@ awk '{ \
     print name"\t"$1 \
   } \
 }' $sample_name | \
-LANG=en_EN sort > "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_family_tax"
+LANG=en_EN sort > "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_family_tax"
 
 awk '{ \
   if(substr($1,1,1)==">"){ \
@@ -308,14 +304,14 @@ awk '{ \
     print name"\t"$1 \
   } \
 }' $sample_name | \
-LANG=en_EN sort > "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_genera_tax"
+LANG=en_EN sort > "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_genera_tax"
 
 for identity in 100 98 97 95 92 90
   do
-    LANG=en_EN join -a1  "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_genera_tax" "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_genera_"$identity"_tax" > "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_genera_tax_tmp"
-    mv "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_genera_tax_tmp" "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_genera_tax"
-    LANG=en_EN join -a1 "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_family_tax" "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_family_"$identity"_tax" > "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_family_tax_tmp"
-    mv "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_family_tax_tmp" "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_family_tax"
+    LANG=en_EN join -a1  "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_genera_tax" "complementary_tax_files_"$sample_name"/"$sample_name"_otu_genera_"$identity"_tax" > "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_genera_tax_tmp"
+    mv "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_genera_tax_tmp" "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_genera_tax"
+    LANG=en_EN join -a1 "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_family_tax" "complementary_tax_files_"$sample_name"/"$sample_name"_otu_family_"$identity"_tax" > "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_family_tax_tmp"
+    mv "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_family_tax_tmp" "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_family_tax"
 
 done
 
@@ -327,7 +323,7 @@ paste <( \
       } \
     }; \
     print $1"\t"$2"\t"$3"\t"$4 \
-  }' "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_genera_tax" \
+  }' "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_genera_tax" \
 ) \
 <( \
 awk '{ \
@@ -337,7 +333,7 @@ awk '{ \
     } \
   }; \
   print $1"\t"$3"\t"$4 \
-}' "complementary_tax_files_"$fsample_name"/"$fsample_name"_otu_combined_family_tax" \
+}' "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_family_tax" \
 ) | \
 sed 's/;@/;__g@/g' | \
 sed 's/@/\t/g' | \
@@ -393,6 +389,6 @@ awk '{ \
     } \
   }; \
   print $1"\t"$(1+n+m+2)"\t"$(2+n+m+2)"\t"$(3+n+m+2)"\t"$(4+n+m+2)"\n"$2 \
-}' > "tax_files_"$fsample_name"/"$fsample_name"_tax_file"
+}' > "tax_files_"$sample_name"/"$sample_name"_tax_file"
 
 rm -r -f tmp_databases

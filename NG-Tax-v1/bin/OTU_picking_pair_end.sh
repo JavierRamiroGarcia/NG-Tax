@@ -222,8 +222,8 @@ for line in $(awk '{if(NR>1 && $1!=""){print $1"separator"$2"separator"$3}}' $ma
 
 ## Chimera checking
 
-    /home/jramirogarcia/Work/NG-Tax/usearch -usearch_global "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_fr" -strand plus -maxaccepts 0 -maxrejects 0 -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_fr" -id 0.97 -uc "chimera_clustering_files/"$sample_name"_chimera_fr" -quiet 2> "chimera_clustering_files/"$sample_name"_chimera_fr_log" & \
-    /home/jramirogarcia/Work/NG-Tax/usearch -usearch_global "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_rr" -strand plus -maxaccepts 0 -maxrejects 0 -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_rr" -id 0.97 -uc "chimera_clustering_files/"$sample_name"_chimera_rr" -quiet 2> "chimera_clustering_files/"$sample_name"_chimera_rr_log" & wait
+    usearch -usearch_global "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_fr" -strand plus -maxaccepts 0 -maxrejects 0 -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_fr" -id 0.97 -uc "chimera_clustering_files/"$sample_name"_chimera_fr" -quiet 2> "chimera_clustering_files/"$sample_name"_chimera_fr_log" & \
+    usearch -usearch_global "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_rr" -strand plus -maxaccepts 0 -maxrejects 0 -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_rr" -id 0.97 -uc "chimera_clustering_files/"$sample_name"_chimera_rr" -quiet 2> "chimera_clustering_files/"$sample_name"_chimera_rr_log" & wait
 
     sed 's/_/\t/g' "chimera_clustering_files/"$sample_name"_chimera_fr" | \
     sort -n -k9 -k14 | \
@@ -273,7 +273,7 @@ for line in $(awk '{if(NR>1 && $1!=""){print $1"separator"$2"separator"$3}}' $ma
 ## Error correction through clustering
 
 
-    /home/jramirogarcia/Work/NG-Tax/usearch -usearch_global "total_sample_files/"$sample_name"_total_sample_file" -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file" -strand plus -maxaccepts 0 -maxrejects 0 -top_hit_only -id $clustering_percentage -uc "clustering_results_files/"$sample_name"_result_clustering_missmatch_correction.uc" -quiet 2> "clustering_results_files/"$sample_name"_results_missmatch_correction_log" & wait
+    usearch -usearch_global "total_sample_files/"$sample_name"_total_sample_file" -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file" -strand plus -maxaccepts 0 -maxrejects 0 -top_hit_only -id $clustering_percentage -uc "clustering_results_files/"$sample_name"_result_clustering_missmatch_correction.uc" -quiet 2> "clustering_results_files/"$sample_name"_results_missmatch_correction_log" & wait
 
     awk '{ \
       if (FNR==1){ \
@@ -349,14 +349,14 @@ rm -f clustering_commands
 
 for i in $(seq -w 0 1 99)
   do
-    echo "/home/jramirogarcia/Work/NG-Tax/usearch -usearch_global all_otus_files/database_otus_fr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/forward_primer_db_"$i" -id 0.90 -uc clustering_results_files/database_results_otus_file_fr_"$i".uc -quiet 2> clustering_results_files/database_log_otus_file_fr_"$i" &" >> clustering_commands
+    echo "usearch -usearch_global all_otus_files/database_otus_fr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/forward_primer_db_"$i" -id 0.90 -uc clustering_results_files/database_results_otus_file_fr_"$i".uc -quiet 2> clustering_results_files/database_log_otus_file_fr_"$i" &" >> clustering_commands
     let "counter++"
     if [ "$counter" -ge "$number_threads" ]
       then
         counter=0
         echo "wait" >> clustering_commands
       fi
-    echo "/home/jramirogarcia/Work/NG-Tax/usearch -usearch_global all_otus_files/database_otus_rr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/reverse_primer_db_"$i" -id 0.90 -uc clustering_results_files/database_results_otus_file_rr_"$i".uc -quiet 2> clustering_results_files/database_log_otus_file_rr_"$i" &" >> clustering_commands
+    echo "usearch -usearch_global all_otus_files/database_otus_rr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/reverse_primer_db_"$i" -id 0.90 -uc clustering_results_files/database_results_otus_file_rr_"$i".uc -quiet 2> clustering_results_files/database_log_otus_file_rr_"$i" &" >> clustering_commands
     let "counter++"
     if [ "$counter" -ge "$number_threads" ]
       then
