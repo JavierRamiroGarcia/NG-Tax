@@ -19,7 +19,7 @@ mismatches can be provided as optional input.\n
 -q complementary reversed reverse-primer sequence, degenerate position between brackets\n
 -f NG-Tax customized forward-primer database name\n
 -r NG-Tax customized reverse-primer database name\n
--x NG-Tax customized taxonomy name\n
+-x NG-Tax customized taxonomy table name\n
 -o forward-read length\n
 -e reverse-read length\n
 \n
@@ -34,11 +34,11 @@ A database with all sequences that have matching (or allowed mismatching) forwar
 A database with all sequences that have matching (or allowed mismatching) reverse primer \n
 A taxonomy file customized for NG-Tax\n\n
 Example of usage:\n
-$0 -d SILVA_128_SSURef_tax_silva.fasta -t tax_slv_ssu_128.txt -k GTGCCAGC[AC]GCCGCGGTAA -p GGACTAC[ACT][ACG]GGGT[AT]TCTAAT -q ATTAGA[AT]ACCC[TCG][ATG]GTAGTCC -f primer_F515_71_nt_1mm_db -r primer_R806_70_nt_1mm_db -x tax_slv_ssu_128_NG_Tax -o 71 -e 70 -y primer_F515_1mm -z primer_R806_1mm\n\n
+$0 -d SILVA_128_SSURef_tax_silva.fasta -t tax_slv_ssu_128.txt -k GTGCCAGC[AC]GCCGCGGTAA -p GGACTAC[ACT][ACG]GGGT[AT]TCTAAT -q ATTAGA[AT]ACCC[TCG][ATG]GTAGTCC -f primer_F515_71_nt_1mm_db -r primer_R806_70_nt_1mm_db -x Silva_taxonomic_table -o 71 -e 70 -y primer_F515_1mm -z primer_R806_1mm\n\n
 output:\n
 primer_F515_71_nt_1mm_db\n
 primer_R806_70_nt_1mm_db\n
-tax_slv_ssu_128_NG_Tax\n\n
+Silva_taxonomic_table\n\n
 --- End of USAGE ---\n
 "
 
