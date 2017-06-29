@@ -9,7 +9,8 @@ usage="
 This script downloads the Silva database and the taxonomy (release_128) named\n
 SILVA_128_SSURef_tax_silva.fasta and tax_slv_ssu_128.txt. A different database\n
 or taxonomy files can be provided by entering the link to them as optional input.\n\n
-It also installs clustalw and add the bin folder to PATH\n
+It also installs clustalw and add the bin folder to PATH\n\n
+It should be run from the folder containing the script\n
 \n
     Optional inputs\n
 \n
@@ -30,6 +31,16 @@ SILVA_128_SSURef_tax_silva.fasta\n
 tax_slv_ssu_128.txt\n\n
 --- End of USAGE ---\n
 "
+
+
+# Check if NG-Tax_installer_mac.sh is run from a different folder
+
+if [[ "$0" != "./NG-Tax_installer_mac.sh" ]]
+  then
+    echo -e "ERROR: Move to the folder containing NG-Tax_installer_mac.sh\nTry ./NG-Tax_installer_mac.sh -h for help"
+    exit 1
+fi
+
 
 # Help option, check number of argument.
 
@@ -68,9 +79,9 @@ if ! type brew &> /dev/null
   then /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
-# Install wget gunzip or clustalw packages if they are not already installed
+# Install wget or gzip packages if they are not already installed
 
-packages_to_install=( wget gzip clustalw)
+packages_to_install=( wget gzip )
 for i in "${packages_to_install[@]}"
 	do
 		package_to_test=$i
@@ -81,6 +92,10 @@ for i in "${packages_to_install[@]}"
 done
 
 
+# Download clustalw to bin directory
+
+wget -P bin ftp://ftp.ebi.ac.uk/pub/software/clustalw2/2.0.12/Readme
+
 # Download Silva databases using realease 128 as default. Other releases could be downloaded by providing the link as an optional input
 
 mkdir SILVA_db
@@ -89,32 +104,32 @@ cd SILVA_db
 if [[ "$database_link" != "" ]]
 
   then
-    wget $database_link
+    wget SILVA_db $database_link
     bname_db=$(basename "$database_link")
     gzip -d $bname_db
 else
-    wget https://www.arb-silva.de/fileadmin/silva_databases/release_128/Exports/SILVA_128_SSURef_tax_silva.fasta.gz
+    wget SILVA_db https://www.arb-silva.de/fileadmin/silva_databases/release_128/Exports/SILVA_128_SSURef_tax_silva.fasta.gz
     gzip -d SILVA_128_SSURef_tax_silva.fasta.gz
 fi
 
-if [[ "$database_link" != "" ]]
+if [[ "$taxonomy_link" != "" ]]
 
   then
-    wget $taxonomy_link
+    wget SILVA_db $taxonomy_link
 else
-    wget https://www.arb-silva.de/fileadmin/silva_databases/release_128/Exports/taxonomy/tax_slv_ssu_128.txt
+    wget SILVA_db https://www.arb-silva.de/fileadmin/silva_databases/release_128/Exports/taxonomy/tax_slv_ssu_128.txt
 fi
+
+cd ..
 
 # Add bin folder to PATH
 
-cd ../bin
-
-path_to_NG_tax=$(pwd)
+path_to_NG_tax=$(pwd)"/bin"
 echo -e "\n#Added by NG-Tax installer" >>  ~/.bashrc
 echo -e 'export PATH="$PATH:'$path_to_NG_tax'"\n' >>  ~/.bashrc
 source  ~/.bashrc
 
-cd ../test_set
+cd test_set
 
 # Update changes
 
