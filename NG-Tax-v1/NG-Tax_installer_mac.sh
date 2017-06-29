@@ -92,7 +92,7 @@ if [[ "$database_link" != "" ]]
     gzip -d $bname_db
 else
     wget https://www.arb-silva.de/fileadmin/silva_databases/release_128/Exports/SILVA_128_SSURef_tax_silva.fasta.gz
-    gunpzip SILVA_128_SSURef_tax_silva.fasta.gz
+    gzip -d SILVA_128_SSURef_tax_silva.fasta.gz
 fi
 
 if [[ "$database_link" != "" ]]
