@@ -43,7 +43,7 @@ fi
 
 # Assign arguments to variables, check for invalid arguments.
 
-while getopts d:t:k:p:q:f:r:x:o:e:y:z: opt
+while getopts d:t: opt
   do
   case "$opt" in
     d)
@@ -60,11 +60,19 @@ while getopts d:t:k:p:q:f:r:x:o:e:y:z: opt
 done
 
 
-# Install clustalw
+# Install wget gunzip or clustalw packages if they are not already installed
 
-sudo apt-get install clustalw
+packages_to_install=( wget gunzip clustalw)
+for i in "${packages_to_install[@]}"
+	do
+		package_to_test=$i
+		if ! type "$package_to_test" &> /dev/null
+			then
+				sudo apt-get install $package_to_test
+		fi
+done
 
-# Download Silva databases using realease 128 as default if no other link is provided as an optional input
+# Download Silva databases using realease 128 as default. Other releases could be downloaded by providing the link as an optional input
 
 mkdir SILVA_db
 cd SILVA_db
@@ -74,7 +82,7 @@ if [[ "$database_link" != "" ]]
   then
     wget $database_link
     bname_db=$(basename "$database_link")
-    gunpzip bname_db
+    gunzip $bname_db
 else
     wget https://www.arb-silva.de/fileadmin/silva_databases/release_128/Exports/SILVA_128_SSURef_tax_silva.fasta.gz
     gunpzip SILVA_128_SSURef_tax_silva.fasta.gz
