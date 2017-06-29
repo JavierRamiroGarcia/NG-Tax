@@ -71,7 +71,7 @@ cd SILVA_db
 
 if [[ "$database_link" != "" ]]
 
-	then
+  then
     wget $database_link
     bname_db=$(basename "$database_link")
     gunpzip bname_db
@@ -82,7 +82,7 @@ fi
 
 if [[ "$database_link" != "" ]]
 
-	then
+  then
     wget $taxonomy_link
 else
     wget https://www.arb-silva.de/fileadmin/silva_databases/release_128/Exports/taxonomy/tax_slv_ssu_128.txt
