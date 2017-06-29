@@ -77,7 +77,7 @@ if [[ "$database_link" != "" ]]
     wget $database_link
     bname_db=$(basename "$database_link")
     gunpzip bname_db
-  else
+else
     wget https://www.arb-silva.de/fileadmin/silva_databases/release_128/Exports/SILVA_128_SSURef_tax_silva.fasta.gz
     gunpzip SILVA_128_SSURef_tax_silva.fasta.gz
 fi
@@ -86,7 +86,7 @@ if [[ "$database_link" != "" ]]
 
 	then
     wget $taxonomy_link
-  else
+else
     wget https://www.arb-silva.de/fileadmin/silva_databases/release_128/Exports/taxonomy/tax_slv_ssu_128.txt
 fi
 
