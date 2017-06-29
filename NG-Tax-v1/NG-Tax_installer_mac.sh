@@ -9,13 +9,15 @@ usage="
 This script downloads the Silva database and the taxonomy (release_128) named\n
 SILVA_128_SSURef_tax_silva.fasta and tax_slv_ssu_128.txt. A different database\n
 or taxonomy files can be provided by entering the link to them as optional input.\n\n
-It also installs clustalw and add the bin folder to PATH\n\n
+In addition it installs clustalw. A different clustalw version can be installed by\n
+entering the link to it as optional input. it also add the bin folder to PATH\n\n
 It should be run from the folder containing the script\n
 \n
     Optional inputs\n
 \n
 -d Link to reference 16S rRNA database file [fasta]\n
 -t Link to SILVA taxonomy\n
+-c Link to CLUSTALW\n
 \n
     Output:\n
 \n
@@ -25,10 +27,11 @@ Example of usage:\n\n
 Default -> Silva release_128:\n
 $0
 Providing links to a different Silva reference 16S database or to a different Silva taxonomy:\n
-$0 -d link_to/SILVA_128_SSURef_tax_silva.fasta -t link_to/tax_slv_ssu_128.txt\n\n
+$0 -d link_to/SILVA_128_SSURef_tax_silva.fasta -t link_to/tax_slv_ssu_128.txt\n\n -c link_to/clustalw
 output:\n
 SILVA_128_SSURef_tax_silva.fasta\n
-tax_slv_ssu_128.txt\n\n
+tax_slv_ssu_128.txt\n
+clustalw\n\n
 --- End of USAGE ---\n
 "
 
@@ -48,7 +51,7 @@ if [[ "$1" == "-h" ]]
   then
     echo -e $usage
     exit 0
-elif [[ $# -ne 0 && $# -ne 2 && $# -ne 4 ]]
+elif [[ $# -ne 0 && $# -ne 2 && $# -ne 4 && $# -ne 6 ]]
   then
     echo -e "ERROR: Invalid number of args \nTry $0 -h for help"
     exit 1
@@ -56,7 +59,7 @@ fi
 
 # Assign arguments to variables, check for invalid arguments.
 
-while getopts d:t: opt
+while getopts d:t:c: opt
   do
   case "$opt" in
     d)
@@ -64,6 +67,9 @@ while getopts d:t: opt
       ;;
     t)
       taxonomy_link=${OPTARG}
+      ;;
+    c)
+      clustalw_link=${OPTARG}
       ;;
     *)
       echo -e "\nERROR: invalid arguments used\n";
@@ -94,7 +100,14 @@ done
 
 # Download clustalw to bin directory
 
-wget -P bin ftp://ftp.ebi.ac.uk/pub/software/clustalw2/2.0.12/Readme
+if [[ "$clustalw_link" != "" ]]
+
+  then
+    wget SILVA_db $clustalw_link
+else
+    wget -P bin ftp://ftp.ebi.ac.uk/pub/software/clustalw2/2.0.12/clustalw-2.0.12-macosx.dmg
+fi
+
 
 # Download Silva databases using realease 128 as default. Other releases could be downloaded by providing the link as an optional input
 
