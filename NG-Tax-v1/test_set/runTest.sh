@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Check if NG-Tax_installer_mac.sh is run from a different folder
+
+if [[ "$0" != "./runTest.sh" ]]
+  then
+    echo -e "ERROR: Move to the folder containing runTest.sh"
+    exit 1
+fi
+
 # Check for usearch file
 if [[ ! -s ../bin/usearch ]]
 	then
