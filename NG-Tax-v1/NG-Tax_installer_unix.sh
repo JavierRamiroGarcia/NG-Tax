@@ -6,8 +6,10 @@ usage="
 \n---USAGE---\n
 \n
     Description:\n\n
-This script download the Silva database and the taxonomy of Silva release_128. A different database or taxonomy files\n
-can be provided by entering the link to them as optional input.\n
+This script downloads the Silva database and the taxonomy (release_128) named\n
+SILVA_128_SSURef_tax_silva.fasta and tax_slv_ssu_128.txt. A different database\n
+or taxonomy files can be provided by entering the link to them as optional input.\n\n
+It also installs clustalw and add the bin folder to PATH\n
 \n
     Optional inputs\n
 \n
