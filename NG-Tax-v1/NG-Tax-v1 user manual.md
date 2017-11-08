@@ -54,29 +54,38 @@ project (no matter if they are in different libraries) and place it in your serv
 The mapping file and any other file needed should be created on Linux environment to
 avoid incompatibilities or saved in UTF-8 format.
 
-*Your mapping file should contain these tab separated columns:*
+**Your mapping file should contain these tab separated columns:**
 
-First column *#SampleID* name. Underscores are not allowed, only periods (obviously every sample name should be
+First column **#SampleID** name. Underscores are not allowed, only periods (obviously every sample name should be
 different)
-Second column *BarcodeSequence*, barcode associated to the sample.
-Third column *LibraryNumber*, library associated to the sample (given by the user), should contain
+
+Second column **BarcodeSequence**, barcode associated to the sample.
+
+Third column **LibraryNumber**, library associated to the sample (given by the user), should contain
 two digits that can go from 01 to 99. Hence, up to 100 libraries can potentially be included in a study.
-Fourth column *Direction*, p is the option for paired-end reads.
-Fifth column *LibraryName*, names given by the sequencing provider.
-Sixth column *ProjectName*, name given to the study.
-Last column *Description*, same name as First column.
+
+Fourth column **Direction**, p is the option for paired-end reads.
+
+Fifth column **LibraryName**, names given by the sequencing provider.
+
+Sixth column **ProjectName**, name given to the study.
+
+Last column **Description**, same name as First column.
+
 Between the sixth and the last column any number of metadata columns can be included.
 
-*Your mapping file should contain these lines:*
+**Your mapping file should contain these lines:**
 
 First line, starting by # and containing the name of the variables.
+
 Last line, empty line.
+
 Between the first and the last line, any number of samples can be included.
 
-Example mapping file.
+**Example mapping file.**
 
 #SampleID | BarcodeSequence | LibraryNumber | Direction | LibraryName | ProjectName | Area | Sex | Description
---------- | --------------- | _____________ | _________ |
+--------- | --------------- | ------------- | --------- | ----------- | ----------- | ---- | --- | -----------
 Tala.17 | CTGGATAA | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | M | Adult | Tala.17
 Tala.22 | ATAAGGTC | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | M | Adult | Tala.22
 Trigue.6 | AATAAGGA | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Trigueros | M | Adult | Trigue.6
