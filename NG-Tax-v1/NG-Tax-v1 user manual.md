@@ -50,79 +50,47 @@ Create a folder for the project were you place your raw data libraries already d
 
 Create a mapping file with extension .txt containing the information for all the samples in the
 project (no matter if they are in different libraries) and place it in your server project folder.
+
 The mapping file and any other file needed should be created on Linux environment to
-avoid incompatibilities.
-Your mapping file should contain these tab separated columns:
-First column SampleID name, do not put underscores, only periods (every sample name should be
+avoid incompatibilities or saved in UTF-8 format.
+
+*Your mapping file should contain these tab separated columns:*
+
+First column *#SampleID* name. Underscores are not allowed, only periods (obviously every sample name should be
 different)
-Second column BarcodeSequence, barcode associated to the sample.
-Third column LibraryNumber, library associated to the sample (given by the user), should contain
-two digits that can go from 01 to 99. Hence, up to 100 libraries can potentially be included in a
-3study.
-Fourth column Direction, p is the option for paired-end reads.
-Fifth column LibraryName, names given by the sequencing provider.
-Sixth column ProjectName, name given to the study.
-Last column Description, same name as First column.
-Between sixth and last column put any metadata to be included in the analysis.
-Your mapping file should contain these lines:
+Second column *BarcodeSequence*, barcode associated to the sample.
+Third column *LibraryNumber*, library associated to the sample (given by the user), should contain
+two digits that can go from 01 to 99. Hence, up to 100 libraries can potentially be included in a study.
+Fourth column *Direction*, p is the option for paired-end reads.
+Fifth column *LibraryName*, names given by the sequencing provider.
+Sixth column *ProjectName*, name given to the study.
+Last column *Description*, same name as First column.
+Between the sixth and the last column any number of metadata columns can be included.
+
+*Your mapping file should contain these lines:*
+
 First line, starting by # and containing the name of the variables.
 Last line, empty line.
-Between the first and the last line you place your samples.
+Between the first and the last line, any number of samples can be included.
+
 Example mapping file.
-#SampleID BarcodeSequence
-Tala.17
-CTGGATAA
-Tala.22
-ATAAGGTC
-Trigue.6
-AATAAGGA
-Tala.19
-TACTTATC
-Trigue.20 ATCTCAGT
-(empty line)
-LibraryNumber
-01
-01
-01
-02
-02
-Direction
-p
-p
-p
-p
-p
-LibraryName
-ProjectName
-lib1_1.fastq,lib1_2.fastq Mock
-lib1_1.fastq,lib1_2.fastq Mock
-lib1_1.fastq,lib1_2.fastq Mock
-lib2_1.fastq,lib2_2.fastq Mock
-lib2_1.fastq,lib2_2.fastq Mock
-Area
-Sex
-Talarrubias M
-Talarrubias M
-Trigueros M
-Talarrubias F
-Trigueros M
-Age
-Adult
-Adult
-Adult
-Young
-Adult
-Description
-Tala.17
-Tala.22
-Trigue.6
-Tala.19
-Trigue.20
-.
+
+#SampleID | BarcodeSequence | LibraryNumber | Direction | LibraryName | ProjectName | Area | Sex | Description
+--------- | --------------- | _____________ | _________ |
+Tala.17 | CTGGATAA | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | M | Adult | Tala.17
+Tala.22 | ATAAGGTC | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | M | Adult | Tala.22
+Trigue.6 | AATAAGGA | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Trigueros | M | Adult | Trigue.6
+Tala.19 | TACTTATC | 02 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | F | Young | Tala.19
+Trigue.20 | ATCTCAGT | 02 | p | lib1_1.fastq,lib1_2.fastq | Mock | Trigueros | M | Adult | Trigue.20
+(empty line) | | | | | | | | |
+
+
 ## 3.2. Create customized 16S rRNA databases for your primers.
+
 This script generates the customized databases adapted to NG-Tax by in-silico PCR, using the
-primer sequences and the read length introduced by the user. Degenerate positions can be
-included between brackets. It also allows the inclusion of primer mismatches. It uses the databases
+primer sequences and the read length introduced by the user.
+Degenerate positions can be included between brackets.
+It also allows the inclusion of primer mismatches. It uses the databases
 from the Silva repository downloaded during the installation.
 Example:
 customized_database_generator.sh -d SILVA_db/SILVA_128_SSUREF_tax_silva.fasta -t
