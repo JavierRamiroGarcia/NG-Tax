@@ -112,29 +112,29 @@ customized_database_generator.sh -d SILVA_db/SILVA_128_SSUREF_tax_silva.fasta -t
 
 **Input:**
 
-**-d** SILVA_reference16S database in fasta format → SILVA_128_SSUREF_tax_silva.fasta
-**-t** taxonomy file from Silva tax_→ slv_ssu_128.txt
-**-x** customized taxonomic table → Silva_taxonomic_table
-**-k** forward_primer_sequence → GTGCCAGC[AC]GCCGCGGTAA
-**-p** reverse_primer_sequence → GGACTAC[ACT][ACG]GGGT[AT]TCTAAT
-**-q** complementary_reversed_reverse_primer_sequence → ATTAGA[AT]ACCC[TCG][ATG]GTAGTCC
-**-f** forward_primer_database_name → primer_F515_71nt_1mm_db
-**-r** reverse_primer_database_name → primer_R806_70nt_1mm_db
-**-o** length_forward_read → 71
-**-e** length_reverse_read → 70
+**-d** SILVA_reference16S database in fasta format → SILVA_128_SSUREF_tax_silva.fasta  
+**-t** taxonomy file from Silva tax_→ slv_ssu_128.txt  
+**-x** customized taxonomic table → Silva_taxonomic_table  
+**-k** forward_primer_sequence → GTGCCAGC[AC]GCCGCGGTAA  
+**-p** reverse_primer_sequence → GGACTAC[ACT][ACG]GGGT[AT]TCTAAT  
+**-q** complementary_reversed_reverse_primer_sequence → ATTAGA[AT]ACCC[TCG][ATG]GTAGTCC  
+**-f** forward_primer_database_name → primer_F515_71nt_1mm_db  
+**-r** reverse_primer_database_name → primer_R806_70nt_1mm_db  
+**-o** length_forward_read → 71  
+**-e** length_reverse_read → 70  
 
 
-**Optional input:**
+**Optional input:**  
 
-**-y** file with allowed forward primers → primer_F515_1mm
-**-z** file with allowed reverse primers → primer_R806_1mm
+**-y** file with allowed forward primers → primer_F515_1mm  
+**-z** file with allowed reverse primers → primer_R806_1mm  
 
 
-**Output:**
+**Output:**  
 
-A database with all sequences that have matching forward primer → primer_F515_71nt_1mm_db
-A database with all sequences that have matching reverse primer → primer_R806_70nt_1mm_db
-A taxonomy file that can be used in NG-Tax → taxonomy_NG_Tax
+A database with all sequences that have matching forward primer → primer_F515_71nt_1mm_db  
+A database with all sequences that have matching reverse primer → primer_R806_70nt_1mm_db  
+A taxonomy file that can be used in NG-Tax → taxonomy_NG_Tax  
 
 ## 3.3. Library filtering.
 
