@@ -50,9 +50,9 @@ Create a folder for the project were you place your raw data libraries already d
 
 Create a mapping file with extension .txt containing the information for all the samples in the
 project (no matter if they are in different libraries) and place it in your server project folder.
-
 The mapping file and any other file needed should be created on Linux environment to
 avoid incompatibilities or saved in UTF-8 format.
+
 
 **Your mapping file should contain these tab separated columns:**
 
@@ -74,6 +74,7 @@ Last column **Description**, same name as First column.
 
 Between the sixth and the last column any number of metadata columns can be included.
 
+
 **Your mapping file should contain these lines:**
 
 First line, starting by # and containing the name of the variables.
@@ -81,6 +82,7 @@ First line, starting by # and containing the name of the variables.
 Last line, empty line.
 
 Between the first and the last line, any number of samples can be included.
+
 
 **Example mapping file.**
 
@@ -101,31 +103,39 @@ primer sequences and the read length introduced by the user.
 Degenerate positions can be included between brackets.
 It also allows the inclusion of primer mismatches. It uses the databases
 from the Silva repository downloaded during the installation.
+
 Example:
-customized_database_generator.sh -d SILVA_db/SILVA_128_SSUREF_tax_silva.fasta -t
-SILVA_db/tax_slv_ssu_128.txt -x Silva_taxonomic_table -k GTGCCAGC[AC]GCCGCGGTAA -p
-GGACTAC[ACT][ACG]GGGT[AT]TCTAAT -q ATTAGA[AT]ACCC[TCG][ATG]GTAGTCC -f
-primer_F515_71nt_1mm_db -r primer_R806_70nt_1mm_db -o 71 -e 70 -y primer_F515_1mm -z
-primer_R806_1mm
-Input:
--d SILVA_reference16S database in fasta format → SILVA_128_SSUREF_tax_silva.fasta
--t taxonomy file from Silva tax_→ slv_ssu_128.txt
--x customized taxonomic table → Silva_taxonomic_table
-4-k forward_primer_sequence → GTGCCAGC[AC]GCCGCGGTAA
--p reverse_primer_sequence → GGACTAC[ACT][ACG]GGGT[AT]TCTAAT
--q complementary_reversed_reverse_primer_sequence →
-ATTAGA[AT]ACCC[TCG][ATG]GTAGTCC
--f forward_primer_database_name → primer_F515_71nt_1mm_db
--r reverse_primer_database_name → primer_R806_70nt_1mm_db
--o length_forward_read → 71
--e length_reverse_read → 70
-Optional input:
--y file with allowed forward primers → primer_F515_1mm
--z file with allowed reverse primers → primer_R806_1mm
-Output:
+
+```
+customized_database_generator.sh -d SILVA_db/SILVA_128_SSUREF_tax_silva.fasta -t SILVA_db/tax_slv_ssu_128.txt -x Silva_taxonomic_table -k GTGCCAGC[AC]GCCGCGGTAA -p GGACTAC[ACT][ACG]GGGT[AT]TCTAAT -q ATTAGA[AT]ACCC[TCG][ATG]GTAGTCC -f primer_F515_71nt_1mm_db -r primer_R806_70nt_1mm_db -o 71 -e 70 -y primer_F515_1mm -z primer_R806_1mm
+```
+
+**Input:**
+
+**-d** SILVA_reference16S database in fasta format → SILVA_128_SSUREF_tax_silva.fasta
+**-t** taxonomy file from Silva tax_→ slv_ssu_128.txt
+**-x** customized taxonomic table → Silva_taxonomic_table
+**-k** forward_primer_sequence → GTGCCAGC[AC]GCCGCGGTAA
+**-p** reverse_primer_sequence → GGACTAC[ACT][ACG]GGGT[AT]TCTAAT
+**-q** complementary_reversed_reverse_primer_sequence → ATTAGA[AT]ACCC[TCG][ATG]GTAGTCC
+**-f** forward_primer_database_name → primer_F515_71nt_1mm_db
+**-r** reverse_primer_database_name → primer_R806_70nt_1mm_db
+**-o** length_forward_read → 71
+**-e** length_reverse_read → 70
+
+
+**Optional input:**
+
+**-y** file with allowed forward primers → primer_F515_1mm
+**-z** file with allowed reverse primers → primer_R806_1mm
+
+
+**Output:**
+
 A database with all sequences that have matching forward primer → primer_F515_71nt_1mm_db
 A database with all sequences that have matching reverse primer → primer_R806_70nt_1mm_db
 A taxonomy file that can be used in NG-Tax → taxonomy_NG_Tax
+
 ## 3.3. Library filtering.
 
 This script filters those reads that don’t have matching barcodes and formats the fastq files in order
