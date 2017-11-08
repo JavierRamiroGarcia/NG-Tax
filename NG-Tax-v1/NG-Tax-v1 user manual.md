@@ -16,16 +16,31 @@ towards standardization.
 # 2. Install
 
 Open a Linux terminal, move to the folder in which you want to install NG-Tax.
+
 Download NG-Tax from GitHub by typing:
+
+```
 git clone https://github.com/JavierRamiroGarcia/NG-Tax.git
+```
+
 Go to http://www.drive5.com/usearch/download.html and download the USEARCH linux version.
 Make a copy of the file with the name usearch and place it in the bin folder of NG-Tax-v1.
+
 To install the pipeline and clustalw run the NG-Tax_installer.sh scrip from the folder NG-Tax-v1. It
 will also download the Silva database.
+
+```
+cd bin
 ./NG-Tax_installer.sh
+```
+
 The pipeline can be tested by running the script runTest.sh present in the folder named test_set.
 Run it from the test_set folder by typing:
+
+```
+cd ../test_set
 ./runTest.sh
+```
 
 # 3. How to run NG-Tax
 
