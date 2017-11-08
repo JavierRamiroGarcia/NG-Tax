@@ -2,7 +2,7 @@ NG-Tax user manual.
 Jun 2017, version 1.0
 
 
-# 1. Introduction.
+# 1. Introduction.  
 
 NG-Tax, a pipeline for 16S rRNA amplicon sequencing analysis of complex biomes using NGS data.
 It was validated with four different Mock Communities, specifically designed to tackle issues
@@ -15,7 +15,7 @@ towards standardization.
 
 
 
-# 2. Installation.
+# 2. Installation.  
 
 Open a Linux terminal, move to the folder in which you want to install NG-Tax.
 
@@ -64,33 +64,22 @@ avoid incompatibilities or saved in UTF-8 format.
 **Your mapping file should contain these tab separated columns:**
 
 * First column **#SampleID** name. Underscores are not allowed, only periods (obviously every sample name should be
-different)
-
-* Second column **BarcodeSequence**, barcode associated to the sample.
-
+different)    
+* Second column **BarcodeSequence**, barcode associated to the sample.  
 * Third column **LibraryNumber**, library associated to the sample (given by the user), should contain
-two digits that can go from 01 to 99. Hence, up to 100 libraries can potentially be included in a study.
-
-* Fourth column **Direction**, p is the option for paired-end reads.
-
-* Fifth column **LibraryName**, names given by the sequencing provider.
-
-* Sixth column **ProjectName**, name given to the study.
-
-* Last column **Description**, same name as First column.
-
-* Between the sixth and the last column any number of metadata columns can be included.
-
+two digits that can go from 01 to 99. Hence, up to 100 libraries can potentially be included in a study.  
+* Fourth column **Direction**, p is the option for paired-end reads.  
+* Fifth column **LibraryName**, names given by the sequencing provider.  
+* Sixth column **ProjectName**, name given to the study.  
+* Last column **Description**, same name as First column.  
+* Between the sixth and the last column any number of metadata columns can be included.  
 
 
 **Your mapping file should contain these lines:**
 
-* First line, starting by # and containing the name of the variables.
-
-* Last line, empty line.
-
-* Between the first and the last line, any number of samples can be included.
-
+* First line, starting by # and containing the name of the variables.  
+* Last line, empty line.  
+* Between the first and the last line, any number of samples can be included.  
 
 
 **Example mapping file:**
@@ -108,7 +97,7 @@ Trigue.20 | ATCTCAGT | 02 | p | lib1_1.fastq,lib1_2.fastq | Mock | Trigueros | M
 
 
 
-## 3.2. Create customized 16S rRNA databases for your primers.
+## 3.2. Create customized 16S rRNA databases for your primers.  
 
 This script generates the customized databases adapted to NG-Tax by in-silico PCR, using the
 primer sequences and the read length introduced by the user.
@@ -150,7 +139,7 @@ customized_database_generator.sh -d SILVA_db/SILVA_128_SSUREF_tax_silva.fasta -t
 
 
 
-## 3.3. Library filtering.
+## 3.3. Library filtering.  
 
 This script filters those reads that don’t have matching barcodes and formats the fastq files in order
 to be used in NG-Tax.  
@@ -324,7 +313,9 @@ the biom file.
 
 ```
 region_16S_comparator.sh -m Mock_communities_V4.txt -t tax_files -f primer_F515_71nt_1mm_db -r primer_R806_70nt_1mm_db -p 1
+```
 
+```
 region_16S_comparator.sh -m Mock_communities_V5V6.txt -t tax_files -f primer_F515_71nt_1mm_db -r primer_R806_70nt_1mm_db -p 2
 ```
 
@@ -347,7 +338,7 @@ region_16S_comparator.sh -m Mock_communities_V5V6.txt -t tax_files -f primer_F51
 **A biom file can be created with both_regions_tax_files**
 
 ```
-make_biom_file -m map_Mock_communities.txt -t both_regions_tax_files
+make_biom_file.sh -m map_Mock_communities.txt -t both_regions_tax_files
 ```
 
 
