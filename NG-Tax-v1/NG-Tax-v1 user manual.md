@@ -28,8 +28,8 @@ git clone https://github.com/JavierRamiroGarcia/NG-Tax.git
 Go to http://www.drive5.com/usearch/download.html and download the USEARCH linux version.
 Make a copy of the file with the name usearch and place it in the bin folder of NG-Tax-v1.
 
-To install the pipeline and clustalw run the NG-Tax_installer.sh scrip from the folder NG-Tax-v1. It
-will also download the Silva database.
+To install the pipeline and clustalw run the NG-Tax_installer_unix.sh scrip from the folder NG-Tax-v1.
+It will also download the Silva database.
 
 ```
 cd NG-Tax/NG-Tax-v1/
