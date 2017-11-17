@@ -40,7 +40,7 @@ The pipeline can be tested by running the script runTest.sh present in the folde
 Run it from the test_set folder by typing:
 
 ```
-cd ../test_set
+cd test_set
 ./runTest.sh
 ```
 
