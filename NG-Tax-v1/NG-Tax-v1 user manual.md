@@ -32,8 +32,8 @@ To install the pipeline and clustalw run the NG-Tax_installer.sh scrip from the 
 will also download the Silva database.
 
 ```
-cd bin
-./NG-Tax_installer.sh
+cd NG-Tax/NG-Tax-v1/bin/
+./NG-Tax_installer_unix.sh
 ```
 
 The pipeline can be tested by running the script runTest.sh present in the folder named test_set.
