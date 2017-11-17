@@ -121,12 +121,12 @@ awk -v v_sample_name=$sample_name '{ \
 
 # Assign taxonomy through clustering.
 
-split -l $(( ($( grep \^\> -c $forward_primer_db ) / 100 + 1)*2 )) -d -a 2 $forward_primer_db "tmp_databases/forward_primer_db_"
-split -l $(( ($( grep \^\> -c $reverse_primer_db ) / 100 + 1)*2 )) -d -a 2 $reverse_primer_db "tmp_databases/reverse_primer_db_"
+split -l $(( ($( grep \^\> -c $forward_primer_db ) / 200 + 1)*2 )) -d -a 2 $forward_primer_db "tmp_databases/forward_primer_db_"
+split -l $(( ($( grep \^\> -c $reverse_primer_db ) / 200 + 1)*2 )) -d -a 2 $reverse_primer_db "tmp_databases/reverse_primer_db_"
 
 rm -f clustering_commands
 
-for i in $(seq -w 0 1 99)
+for i in $(seq -w 0 1 199)
   do
     echo "/home/jramirogarcia/Work/NG-Tax/usearch -usearch_global otus_files_"$sample_name"/"$sample_name"_otus_fr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/forward_primer_db_"$i" -id 0.90 -uc clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr_"$i".uc -quiet 2> clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr_log_"$i" &" >> clustering_commands
     let "counter++"
