@@ -141,23 +141,31 @@ END{ \
 }' $database_address | \
 awk '{ \
   if(substr($1,1,1)==">"){ \
-    print $1 \
+    if(substr($2,1,8)=="Bacteria"){ \
+      p=1; \
+    }; \
+    if(p==1){ \
+      print $1 \
+    } \
   } \
   else{ \
-    gsub("U","T",$1); \
-    for(i=length($1);i!=0;i--){ \
+    if(p==1){ \
+      gsub("U","T",$1); \
+      for(i=length($1);i!=0;i--){ \
       complementary_reversed_sequence=complementary_reversed_sequence substr($1,i,1) \
-    }; \
-    gsub("T","1",complementary_reversed_sequence); \
-    gsub("G","2",complementary_reversed_sequence); \
-    gsub("C","3",complementary_reversed_sequence); \
-    gsub("A","4",complementary_reversed_sequence); \
-    gsub("1","A",complementary_reversed_sequence); \
-    gsub("2","C",complementary_reversed_sequence); \
-    gsub("3","G",complementary_reversed_sequence); \
-    gsub("4","T",complementary_reversed_sequence); \
-    print $1"\t"complementary_reversed_sequence; \
-    complementary_reversed_sequence="" \
+      }; \
+      gsub("T","1",complementary_reversed_sequence); \
+      gsub("G","2",complementary_reversed_sequence); \
+      gsub("C","3",complementary_reversed_sequence); \
+      gsub("A","4",complementary_reversed_sequence); \
+      gsub("1","A",complementary_reversed_sequence); \
+      gsub("2","C",complementary_reversed_sequence); \
+      gsub("3","G",complementary_reversed_sequence); \
+      gsub("4","T",complementary_reversed_sequence); \
+      print $1"\t"complementary_reversed_sequence; \
+      complementary_reversed_sequence="" \
+    } \
+    p=0 \
   } \
 }' > "tmp_"$forward_primer_database_name"_"$reverse_primer_database_name
 
