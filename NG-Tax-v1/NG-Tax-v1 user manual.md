@@ -63,11 +63,11 @@ avoid incompatibilities or saved in UTF-8 format.
 
 **Your mapping file should contain these tab separated columns:**
 
-* First column **#SampleID** name. Underscores are not allowed, only periods (obviously every sample name should be
-different)    
+* First column **#SampleID** name. Underscores are not allowed, but periods are allowed.
+Every sample should have a different name.    
 * Second column **BarcodeSequence**, barcode associated to the sample.  
 * Third column **LibraryNumber**, library associated to the sample (given by the user), should contain
-two digits that can go from 01 to 99. Hence, up to 100 libraries can potentially be included in a study.  
+two digits that can go from 01 to 99. Hence, up to 99 libraries can be included in a study.  
 * Fourth column **Direction**, p is the option for paired-end reads.  
 * Fifth column **LibraryName**, names given by the sequencing provider.  
 * Sixth column **ProjectName**, name given to the study.  
