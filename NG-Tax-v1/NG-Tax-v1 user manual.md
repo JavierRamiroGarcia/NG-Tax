@@ -1,5 +1,5 @@
 NG-Tax user manual.  
-Jun 2017, version 1.0
+Nov 2018, version 1.0
 
 
 # 1. Introduction.  
@@ -85,7 +85,7 @@ two digits that can go from 01 to 99. Hence, up to 100 libraries can potentially
 **Example mapping file:**
 
 
-#SampleID | BarcodeSequence | LibraryNumber | Direction | LibraryName | ProjectName | Area | Sex | Description
+#SampleID | BarcodeSequence | LibraryNumber | Direction | LibraryName | ProjectName | Area | Sex | Age | Description
 --------- | --------------- | ------------- | --------- | ----------- | ----------- | ---- | --- | -----------
 Tala.17 | CTGGATAA | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | M | Adult | Tala.17
 Tala.22 | ATAAGGTC | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | M | Adult | Tala.22
@@ -143,7 +143,7 @@ customized_database_generator.sh -d SILVA_db/SILVA_128_SSUREF_tax_silva.fasta -t
 
 This script filters those reads that don’t have matching barcodes and formats the fastq files in order
 to be used in NG-Tax.  
-Samples should have forward and reverse reads barcoded using the same
+Samples should have forward and reverse barcoded reads using the same
 barcode.  
 Last nucleotide of every read is also removed for quality reasons.
 
@@ -171,8 +171,8 @@ library_filtering.sh -a lib1_1.fastq -b lib1_2.fastq -p Mock -n 01 -f GTGCCAGC[A
 
 This script demultiplexes the raw data into samples using the information contained in the mapping file.  
 It also generates an OTU table per sample after removing chimeras and assigns taxonomy to the OTUs.  
-NG-Tax is designed for short reads, 70 nucleotides is the recommended read length.  
-Reads can be trimmed to this length by the script. Longer length can be selected by the user but comparison with 70 nucleotide analysis is advisable.
+NG-Tax is designed for short reads, 70-100 nucleotides is the recommended read length.  
+Reads can be trimmed to this length by the script. Longer length can be selected by the user but comparison with 70-100 nucleotide analysis is advisable.
 
 
 
@@ -180,7 +180,7 @@ Reads can be trimmed to this length by the script. Longer length can be selected
 
 Reads are ranked by abundance and OTUs are added to an OTU table for that sample
 starting from the most abundant sequence until the abundance is lower than a percentage defined
-by the user (the recommended one is 0.1).  
+by the user (the recommended threshold is 0.1).  
 Then discarded reads are clustered to the OTU table allowing one mismatch.
 
 
