@@ -1,5 +1,5 @@
 NG-Tax user manual.  
-Nov 2018, version 1.0
+Nov 2018, version 1.0  
 Last version available at https://github.com/JavierRamiroGarcia/NG-Tax.git
 
 
@@ -64,7 +64,7 @@ avoid incompatibilities or saved in UTF-8 format.
 
 **Your mapping file should contain these tab separated columns:**
 
-* First column **#SampleID** name. Underscores are not allowed, but periods are allowed.
+* First column **#SampleID** name. Underscores are not allowed, but periods are allowed.  
 Every sample should have a different name.    
 * Second column **BarcodeSequence**, barcode associated to the sample.  
 * Third column **LibraryNumber**, library associated to the sample (given by the user), should contain
