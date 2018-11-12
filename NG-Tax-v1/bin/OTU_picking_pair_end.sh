@@ -352,9 +352,7 @@ for i in $(seq -w 0 1 199)
     pids="$pids $!"
     if [ "$counter" -ge "$number_threads" ]
       then
-        echo $counter
         counter=0
-        echo $pids
         wait $pids
         pids=""
       fi
@@ -363,15 +361,12 @@ for i in $(seq -w 0 1 199)
     pids="$pids $!"
     if [ "$counter" -ge "$number_threads" ]
       then
-        echo $counter
         counter=0
-        echo $pids
         wait $pids
         pids=""
       fi
     if [[ $i == 199 ]]
       then
-        echo "hola"
         wait $pids
       fi
 done
@@ -414,7 +409,9 @@ for identity in 90 92 95 97 98 100
         } \
       } \
     }' $taxonomy  "clustering_results_files/database_results_otus_file_fr.uc" "clustering_results_files/database_results_otus_file_rr.uc" | \
-    awk '{print $1"\t"$3$4$5$6"\t"$7$8}' | \
+    awk '{ \
+      print $1"\t"$3$4$5$6"\t"$7$8 \
+    }' | \
     sort | \
     uniq -c | \
     sort -k2 -nk1 | \
@@ -474,7 +471,9 @@ for identity in 90 92 95 97 98 100
         } \
       } \
     }' $taxonomy  "clustering_results_files/database_results_otus_file_fr.uc" "clustering_results_files/database_results_otus_file_rr.uc" | \
-    awk '{print $1"\t"$3$4$5"\t"$6$7}' | \
+    awk '{ \
+      print $1"\t"$3$4$5"\t"$6$7 \
+    }' | \
     sort | \
     uniq -c | \
     sort -k2 -nk1 | \
@@ -533,62 +532,72 @@ paste <( \
     }; \
     print $1"\t"$2"\t"$3"\t"$4 \
   }' "complementary_tax_files/database_otu_combined_genera_tax" \
-) \
-<( \
-  awk '{ \
-    for(i=4;i>2;i--){ \
-      if($i==""){ \
-        $i="NA;__p;__c;__o;__f;@NA@NA@NA" \
-      } \
-    }; \
-    print $1"\t"$3"\t"$4 \
-  }' "complementary_tax_files/database_otu_combined_family_tax" \
-  ) | \
-  sed 's/;@/;__g@/g' | \
-  sed 's/@/\t/g' | \
-  sed 's/;/\t/g' | \
-  awk '{ \
-    if($39<0.5){ \
-      $35="__f" \
-    }; \
-    if($30<0.5){ \
-      $26="__f" \
-    }; \
-    if($9==97){ \
-      $17="__g" \
-    }; \
-    if($9==95){ \
-      $8="__g";$16="__f";$17="__g";$35="__f" \
-    }; \
-    if($9==92){ \
-      $7="__f";$8="__g";$16="__f";$17="__g";$26="__f";$35="__f" \
-    }; \
-    if($9==90){ \
-      $7="__f";$8="__g";$26="__f" \
-    }; \
-      print $1"\t"$2"\t"$3";"$4";"$5";"$6";"$7";"$8"\t"$9"\t"$10"\t"$11"\t"$12";"$13";"$14";"$15";"$16";"$17"\t"$18"\t"$19"\t"$20"\t"$22";"$23";"$24";"$25";"$26";"$27"\t"$28"\t"$29"\t"$30"\t"$31";"$32";"$33";"$34";"$35";"$36"\t"$37"\t"$38"\t"$39 \
-    }' | \
+  ) \
+  <( \
     awk '{ \
-      if($5>1 || $5=="NA" || $5==$9 || $9=="NA"){ \
-        n=0; \
-        if($6>=0.5){ \
-          m=0 \
-        } \
-        else{ \
-          m=8 \
-        } \
-      } \
-      else{ \
-        n=4; \
-        if($10>=0.5){ \
-          m=0 \
-        } \
-        else{ \
-          m=8 \
+      for(i=4;i>2;i--){ \
+        if($i==""){ \
+          $i="NA;__p;__c;__o;__f;@NA@NA@NA" \
         } \
       }; \
-      print $1"\t"$(1+n+m+2)"\t"$(2+n+m+2)"\t"$(3+n+m+2)"\t"$(4+n+m+2)"\t"$2 \
-    }' > "complementary_tax_files/database_tax_file"
+      print $1"\t"$3"\t"$4 \
+    }' "complementary_tax_files/database_otu_combined_family_tax" \
+  ) | \
+sed 's/;@/;__g@/g' | \
+sed 's/@/\t/g' | \
+sed 's/;/\t/g' | \
+awk '{ \
+  if($39<0.5){ \
+    $35="__f" \
+  }; \
+  if($30<0.5){ \
+    $26="__f" \
+  }; \
+  if($9==97){ \
+    $17="__g" \
+  }; \
+  if($9==95){ \
+    $8="__g"; \
+    $16="__f"; \
+    $17="__g"; \
+    $35="__f" \
+  }; \
+  if($9==92){ \
+    $7="__f"; \
+    $8="__g"; \
+    $16="__f"; \
+    $17="__g"; \
+    $26="__f"; \
+    $35="__f" \
+  }; \
+  if($9==90){ \
+    $7="__f"; \
+    $8="__g"; \
+    $26="__f" \
+  }; \
+  print $1"\t"$2"\t"$3";"$4";"$5";"$6";"$7";"$8"\t"$9"\t"$10"\t"$11"\t"$12";"$13";"$14";"$15";"$16";"$17"\t"$18"\t"$19"\t"$20"\t"$22";"$23";"$24";"$25";"$26";"$27"\t"$28"\t"$29"\t"$30"\t"$31";"$32";"$33";"$34";"$35";"$36"\t"$37"\t"$38"\t"$39 \
+}' | \
+awk '{ \
+  if($5>1 || $5=="NA" || $5==$9 || $9=="NA"){ \
+    n=0; \
+    if($6>=0.5){ \
+      m=0 \
+    } \
+    else{ \
+      m=8 \
+    } \
+  } \
+  else{ \
+    n=4; \
+    if($10>=0.5){ \
+      m=0 \
+    } \
+    else{ \
+      m=8 \
+    } \
+  }; \
+  print $1"\t"$(1+n+m+2)"\t"$(2+n+m+2)"\t"$(3+n+m+2)"\t"$(4+n+m+2)"\t"$2 \
+}' > "complementary_tax_files/database_tax_file"
 
 
 for sample_name in $(awk '{if(NR>1 && $1!=""){print $1}}' $map)
