@@ -1,5 +1,6 @@
 NG-Tax user manual.  
 Nov 2018, version 1.0
+Last version available at https://github.com/JavierRamiroGarcia/NG-Tax.git
 
 
 # 1. Introduction.  
