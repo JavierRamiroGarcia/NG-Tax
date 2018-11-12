@@ -8,8 +8,8 @@ usage="
     Description:\n\n
 This script demultiplexes the raw data into samples using the information contained in the mapping file, \n
 it also generates an OTU table per each sample after removing chimeras and assigns taxonomy to the OTUs. \n
-NG-Tax is designed for short reads, 70 nucleotides is the recommended read length. Reads can be trimmed \n
-to this length by the script. Longer length can be selected by the user but comparison with 70 nucleotides \n
+NG-Tax is designed for short reads, 70-100 nucleotides is the recommended read length. Reads can be trimmed \n
+to this length by the script. Longer length can be selected by the user but comparison with 70-100 nucleotides \n
 results is advisable. \n
 \n
     Required inputs\n
@@ -222,8 +222,8 @@ for line in $(awk '{if(NR>1 && $1!=""){print $1"separator"$2"separator"$3}}' $ma
 
 ## Chimera checking
 
-    usearch -usearch_global "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_fr" -strand plus -maxaccepts 0 -maxrejects 0 -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_fr" -id 0.97 -uc "chimera_clustering_files/"$sample_name"_chimera_fr" -quiet 2> "chimera_clustering_files/"$sample_name"_chimera_fr_log" & \
-    usearch -usearch_global "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_rr" -strand plus -maxaccepts 0 -maxrejects 0 -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_rr" -id 0.97 -uc "chimera_clustering_files/"$sample_name"_chimera_rr" -quiet 2> "chimera_clustering_files/"$sample_name"_chimera_rr_log" & wait
+    $(dirname $0)"/"usearch -usearch_global "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_fr" -strand plus -maxaccepts 0 -maxrejects 0 -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_fr" -id 0.97 -uc "chimera_clustering_files/"$sample_name"_chimera_fr" -quiet 2> "chimera_clustering_files/"$sample_name"_chimera_fr_log" & wait $!
+    $(dirname $0)"/"usearch -usearch_global "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_rr" -strand plus -maxaccepts 0 -maxrejects 0 -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file_rr" -id 0.97 -uc "chimera_clustering_files/"$sample_name"_chimera_rr" -quiet 2> "chimera_clustering_files/"$sample_name"_chimera_rr_log" & wait $!
 
     sed 's/_/\t/g' "chimera_clustering_files/"$sample_name"_chimera_fr" | \
     sort -n -k9 -k14 | \
@@ -273,7 +273,7 @@ for line in $(awk '{if(NR>1 && $1!=""){print $1"separator"$2"separator"$3}}' $ma
 ## Error correction through clustering
 
 
-    usearch -usearch_global "total_sample_files/"$sample_name"_total_sample_file" -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file" -strand plus -maxaccepts 0 -maxrejects 0 -top_hit_only -id $clustering_percentage -uc "clustering_results_files/"$sample_name"_result_clustering_missmatch_correction.uc" -quiet 2> "clustering_results_files/"$sample_name"_results_missmatch_correction_log" & wait
+    $(dirname $0)/usearch -usearch_global "total_sample_files/"$sample_name"_total_sample_file" -db "pre_set_otu_files/"$sample_name"_pre_set_OTU_file" -strand plus -maxaccepts 0 -maxrejects 0 -top_hit_only -id $clustering_percentage -uc "clustering_results_files/"$sample_name"_result_clustering_missmatch_correction.uc" -quiet 2> "clustering_results_files/"$sample_name"_results_missmatch_correction_log" & wait $!
 
     awk '{ \
       if (FNR==1){ \
@@ -342,34 +342,41 @@ awk '{ \
 
 # Assign taxonomy through clustering.
 
-split -l $(( ($( grep \^\> -c $forward_primer_db ) / 200 + 1)*2 )) -d -a 2 $forward_primer_db "tmp_databases/forward_primer_db_"
-split -l $(( ($( grep \^\> -c $reverse_primer_db ) / 200 + 1)*2 )) -d -a 2 $reverse_primer_db "tmp_databases/reverse_primer_db_"
-
-rm -f clustering_commands
+split -l $(( ($( grep \^\> -c $forward_primer_db ) / 200 + 1)*2 )) -d -a 3 $forward_primer_db "tmp_databases/forward_primer_db_"
+split -l $(( ($( grep \^\> -c $reverse_primer_db ) / 200 + 1)*2 )) -d -a 3 $reverse_primer_db "tmp_databases/reverse_primer_db_"
 
 for i in $(seq -w 0 1 199)
   do
-    echo "usearch -usearch_global all_otus_files/database_otus_fr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/forward_primer_db_"$i" -id 0.90 -uc clustering_results_files/database_results_otus_file_fr_"$i".uc -quiet 2> clustering_results_files/database_log_otus_file_fr_"$i" &" >> clustering_commands
-    let "counter++"
+    $(dirname $0)/usearch -usearch_global all_otus_files/database_otus_fr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/forward_primer_db_$i -id 0.90 -uc clustering_results_files/database_results_otus_file_fr_$i.uc -quiet 2> clustering_results_files/database_log_otus_file_fr_$i &
+    let counter++
+    pids="$pids $!"
     if [ "$counter" -ge "$number_threads" ]
       then
+        echo $counter
         counter=0
-        echo "wait" >> clustering_commands
+        echo $pids
+        wait $pids
+        pids=""
       fi
-    echo "usearch -usearch_global all_otus_files/database_otus_rr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/reverse_primer_db_"$i" -id 0.90 -uc clustering_results_files/database_results_otus_file_rr_"$i".uc -quiet 2> clustering_results_files/database_log_otus_file_rr_"$i" &" >> clustering_commands
-    let "counter++"
+    $(dirname $0)/usearch -usearch_global all_otus_files/database_otus_rr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/reverse_primer_db_$i -id 0.90 -uc clustering_results_files/database_results_otus_file_rr_$i.uc -quiet 2> clustering_results_files/database_log_otus_file_rr_$i &
+    let counter++
+    pids="$pids $!"
     if [ "$counter" -ge "$number_threads" ]
       then
+        echo $counter
         counter=0
-        echo "wait" >> clustering_commands
+        echo $pids
+        wait $pids
+        pids=""
+      fi
+    if [[ $i == 199 ]]
+      then
+        echo "hola"
+        wait $pids
       fi
 done
 
-echo "wait" >> clustering_commands
-
-sh clustering_commands
-
-rm clustering_commands
+# Join clustering results
 
 cat "clustering_results_files/database_results_otus_file_fr_"*  > "clustering_results_files/database_results_otus_file_fr.uc"
 
