@@ -121,40 +121,43 @@ awk -v v_sample_name=$sample_name '{ \
 
 # Assign taxonomy through clustering.
 
-split -l $(( ($( grep \^\> -c $forward_primer_db ) / 200 + 1)*2 )) -d -a 2 $forward_primer_db "tmp_databases/forward_primer_db_"
-split -l $(( ($( grep \^\> -c $reverse_primer_db ) / 200 + 1)*2 )) -d -a 2 $reverse_primer_db "tmp_databases/reverse_primer_db_"
-
-rm -f clustering_commands
+split -l $(( ($( grep \^\> -c $forward_primer_db ) / 200 + 1)*2 )) -d -a 3 $forward_primer_db "tmp_databases/forward_primer_db_"
+split -l $(( ($( grep \^\> -c $reverse_primer_db ) / 200 + 1)*2 )) -d -a 3 $reverse_primer_db "tmp_databases/reverse_primer_db_"
 
 for i in $(seq -w 0 1 199)
   do
-    echo "/home/jramirogarcia/Work/NG-Tax/usearch -usearch_global otus_files_"$sample_name"/"$sample_name"_otus_fr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/forward_primer_db_"$i" -id 0.90 -uc clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr_"$i".uc -quiet 2> clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr_log_"$i" &" >> clustering_commands
-    let "counter++"
+    $(dirname $0)/usearch -usearch_global all_otus_files/database_otus_fr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/forward_primer_db_$i -id 0.90 -uc clustering_results_files/database_results_otus_file_fr_$i.uc -quiet 2> clustering_results_files/database_log_otus_file_fr_$i &
+    let counter++
+    pids="$pids $!"
     if [ "$counter" -ge "$number_threads" ]
       then
         counter=0
-        echo "wait" >> clustering_commands
+        wait $pids
+        pids=""
       fi
-    echo "/home/jramirogarcia/Work/NG-Tax/usearch -usearch_global otus_files_"$sample_name"/"$sample_name"_otus_rr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/reverse_primer_db_"$i" -id 0.90 -uc clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr_"$i".uc -quiet 2> clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr_log_"$i" &" >> clustering_commands
-    let "counter++"
+    $(dirname $0)/usearch -usearch_global all_otus_files/database_otus_rr -maxaccepts 0 -maxrejects 0 -strand plus -db tmp_databases/reverse_primer_db_$i -id 0.90 -uc clustering_results_files/database_results_otus_file_rr_$i.uc -quiet 2> clustering_results_files/database_log_otus_file_rr_$i &
+    let counter++
+    pids="$pids $!"
     if [ "$counter" -ge "$number_threads" ]
       then
+        echo $counter
         counter=0
-        echo "wait" >> clustering_commands
+        wait $pids
+        pids=""
+      fi
+    if [[ $i == 199 ]]
+      then
+        wait $pids
       fi
 done
 
-echo "wait" >> clustering_commands
+# Join clustering results
 
-sh clustering_commands
+cat "clustering_results_files/database_results_otus_file_fr_"*  > "clustering_results_files/database_results_otus_file_fr.uc"
 
-rm clustering_commands
+cat "clustering_results_files/database_results_otus_file_rr_"*  > "clustering_results_files/database_results_otus_file_rr.uc"
 
-cat "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr_"*  > "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr.uc"
-
-cat "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr_"*  > "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr.uc"
-
-rm "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr_"* "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr_"*
+rm "clustering_results_files/database_results_otus_file_fr_"* "clustering_results_files/database_results_otus_file_rr_"*
 
 
 # Generate taxonomic files
@@ -200,7 +203,7 @@ for identity in 90 92 95 97 98 100
         read=$2; \
         tax=$3$4; \
         print_final_line=1 \
-      }
+      } \
       else{ \
         if(read!=$2){ \
           print ">"read"\t"tax"@"v_identity"@"n"@"n/m; \
@@ -222,68 +225,67 @@ for identity in 90 92 95 97 98 100
       } \
     }' | LANG=en_EN sort  > "complementary_tax_files_"$sample_name"/"$sample_name"_otu_genera_"$identity"_tax"
 
-awk -v v_identity=$identity '{ \
-  if (FNR==1){ \
-    x++ \
-  } \
-} \
-{ \
-  if (x==1){ \
-    tax[$1]=$0 \
-  } \
-} \
-{ \
-  if (x==2){ \
-    if ($1=="H" && $4>=v_identity){ \
-      arr[$9"_"$10]=$10 \
-    } \
-  } \
-} \
-{ \
-  if (x==3){ \
-    if ($1=="H" && $4>=v_identity){ \
-      if ($9"_"$10 in arr != 0){ \
-        print $9"\t"tax[$10] \
+    awk -v v_identity=$identity '{ \
+      if (FNR==1){ \
+        x++ \
       } \
     } \
-  } \
-}' $taxonomy  "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr.uc" "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr.uc" | \
-awk '{\
-  print $1"\t"$3$4$5"\t"$6$7 \
-}' | \
-sort | \
-uniq -c | \
-sort -k2 -nk1 | \
-awk -v v_identity=$identity '{ \
-  if(NR==1){ \
-    m=$1; \
-    n=$1; \
-    read=$2; \
-    tax=$3$4; \
-    print_final_line=1 \
-  } \
-  else{ \
-    if(read!=$2){ \
-      print ">"read"\t"tax"@"v_identity"@"n"@"n/m; \
-      n=$1; \
-      m=$1; \
-      read=$2; \
-      tax=$3$4 \
+    { \
+      if (x==1){ \
+        tax[$1]=$0 \
+      } \
     } \
-    else{ \
-      n=$1; \
-      m+=$1; \
-      tax=$3$4 \
+    { \
+      if (x==2){ \
+        if ($1=="H" && $4>=v_identity){ \
+          arr[$9"_"$10]=$10 \
+        } \
+      } \
     } \
-  } \
-} \
-END{ \
-  if(print_final_line==1){ \
-    print ">"read"\t"tax"@"v_identity"@"n"@"n/m \
-  }\
-}' | LANG=en_EN sort > "complementary_tax_files_"$sample_name"/"$sample_name"_otu_family_"$identity"_tax"
-
-
+    { \
+      if (x==3){ \
+        if ($1=="H" && $4>=v_identity){ \
+          if ($9"_"$10 in arr != 0){ \
+            print $9"\t"tax[$10] \
+          } \
+        } \
+      } \
+    }' $taxonomy  "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_fr.uc" "clustering_results_files_"$sample_name"/"$sample_name"_results_otus_file_rr.uc" | \
+    awk '{\
+      print $1"\t"$3$4$5"\t"$6$7 \
+    }' | \
+    sort | \
+    uniq -c | \
+    sort -k2 -nk1 | \
+    awk -v v_identity=$identity '{ \
+      if(NR==1){ \
+        m=$1; \
+        n=$1; \
+        read=$2; \
+        tax=$3$4; \
+        print_final_line=1 \
+      } \
+      else{ \
+        if(read!=$2){ \
+          print ">"read"\t"tax"@"v_identity"@"n"@"n/m; \
+          n=$1; \
+          m=$1; \
+          read=$2; \
+          tax=$3$4 \
+        } \
+        else{ \
+          n=$1; \
+          m+=$1; \
+          tax=$3$4 \
+        } \
+      } \
+    } \
+    END{ \
+      if(print_final_line==1){ \
+        print ">"read"\t"tax"@"v_identity"@"n"@"n/m \
+      } \
+    }' | \
+    LANG=en_EN sort > "complementary_tax_files_"$sample_name"/"$sample_name"_otu_family_"$identity"_tax"
 done
 
 awk '{ \
@@ -324,17 +326,17 @@ paste <( \
     }; \
     print $1"\t"$2"\t"$3"\t"$4 \
   }' "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_genera_tax" \
-) \
-<( \
-awk '{ \
-  for(i=4;i>2;i--){ \
-    if($i==""){ \
-      $i="NA;__p;__c;__o;__f;@NA@NA@NA" \
-    } \
-  }; \
-  print $1"\t"$3"\t"$4 \
-}' "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_family_tax" \
-) | \
+  ) \
+  <( \
+    awk '{ \
+      for(i=4;i>2;i--){ \
+        if($i==""){ \
+          $i="NA;__p;__c;__o;__f;@NA@NA@NA" \
+        } \
+      }; \
+      print $1"\t"$3"\t"$4 \
+    }' "complementary_tax_files_"$sample_name"/"$sample_name"_otu_combined_family_tax" \
+  ) | \
 sed 's/;@/;__g@/g' | \
 sed 's/@/\t/g' | \
 sed 's/;/\t/g' | \
