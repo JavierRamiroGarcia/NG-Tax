@@ -85,14 +85,14 @@ two digits that can go from 01 to 99. Hence, up to 100 libraries can potentially
 **Example mapping file:**
 
 
-#SampleID | BarcodeSequence | LibraryNumber | Direction | LibraryName | ProjectName | Area | Sex | Age | Description
---------- | --------------- | ------------- | --------- | ----------- | ----------- | ---- | --- | -----------
-Tala.17 | CTGGATAA | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | M | Adult | Tala.17
-Tala.22 | ATAAGGTC | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | M | Adult | Tala.22
-Trigue.6 | AATAAGGA | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Trigueros | M | Adult | Trigue.6
-Tala.19 | TACTTATC | 02 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | F | Young | Tala.19
-Trigue.20 | ATCTCAGT | 02 | p | lib1_1.fastq,lib1_2.fastq | Mock | Trigueros | M | Adult | Trigue.20
-(empty line) | | | | | | | | |
+#SampleID | BarcodeSequence | LibraryNumber | Direction | LibraryName | ProjectName | Area | Sex | Age | Description |
+--------- | --------------- | ------------- | --------- | ----------- | ----------- | ---- | --- | --- | ----------- |
+Tala.17 | CTGGATAA | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | M | Adult | Tala.17 |
+Tala.22 | ATAAGGTC | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | M | Adult | Tala.22 |
+Trigue.6 | AATAAGGA | 01 | p | lib1_1.fastq,lib1_2.fastq | Mock | Trigueros | M | Adult | Trigue.6 |
+Tala.19 | TACTTATC | 02 | p | lib1_1.fastq,lib1_2.fastq | Mock | Talarrubias | F | Young | Tala.19 |
+Trigue.20 | ATCTCAGT | 02 | p | lib1_1.fastq,lib1_2.fastq | Mock | Trigueros | M | Adult | Trigue.20 |
+(empty line) | | | | | | | | | |
 
 
 
