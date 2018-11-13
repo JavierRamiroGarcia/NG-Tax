@@ -7,7 +7,7 @@ Last version available at https://github.com/JavierRamiroGarcia/NG-Tax.git
 
 NG-Tax, a pipeline for 16S rRNA amplicon sequencing analysis of complex biomes using NGS data.
 It was validated with four different Mock Communities, specifically designed to tackle issues
-regarding optimization of routinely used filtering parameters. It was designed for short paired end
+regarding optimization of routinely used filtering parameters. It was designed for short paired-end
 reads that are translated to a biom file that can be used in QIIME and other available pipelines for
 downstream analysis. NG-Tax presents high robustness against technical bias associated with 16S
 rRNA gene amplicon studies that improves comparability between studies and facilitates efforts
@@ -16,11 +16,13 @@ towards standardization.
 
 
 
-# 2. Installation.  
+# 2. Installation Instructions.  
 
 Open a Linux terminal, move to the folder in which you want to install NG-Tax.
 
-Download NG-Tax from GitHub by typing:
+Getting the source code:
+
+Download NG-Tax from GitHub by giving the following command:
 
 ```
 git clone https://github.com/JavierRamiroGarcia/NG-Tax.git
@@ -29,9 +31,10 @@ git clone https://github.com/JavierRamiroGarcia/NG-Tax.git
 Go to http://www.drive5.com/usearch/download.html and download the USEARCH linux version.
 Make a copy of the file with the name usearch and place it in the bin folder of NG-Tax-v1.
 
-To install the pipeline and clustalw run the NG-Tax_installer_unix.sh scrip from the folder NG-Tax-v1.
-It will also download the Silva database.
+Downloading the database:
 
+To install the pipeline and clustalw, run the NG-Tax_installer_unix.sh script from the folder NG-Tax-v1.
+It will also download the Silva database.
 ```
 cd NG-Tax/NG-Tax-v1/
 ./NG-Tax_installer_unix.sh
@@ -45,21 +48,21 @@ cd test_set
 ./runTest.sh
 ```
 
-
+NOte: This is to check whether the installation has been done correctly.
 
 
 # 3. How to run NG-Tax
 
-Create a folder for the project were you place your raw data libraries already decompressed
+Create a folder for the project where you place your raw data libraries that are already decompressed
 
 
 
 ## 3.1. Create a mapping file
 
 Create a mapping file with extension .txt containing the information for all the samples in the
-project (no matter if they are in different libraries) and place it in your server project folder.
+project (no matter if they are in different libraries) and place it in your project folder.
 The mapping file and any other file needed should be created on Linux environment to
-avoid incompatibilities or saved in UTF-8 format.
+avoid incompatibilities or should be saved in UTF-8 format.
 
 
 **Your mapping file should contain these tab separated columns:**
