@@ -48,7 +48,7 @@ cd test_set
 ./runTest.sh
 ```
 
-NOte: This is to check whether the installation has been done correctly.
+Note: This is to check whether the installation has been done correctly.
 
 
 # 3. How to run NG-Tax
