@@ -28,7 +28,7 @@ Download NG-Tax from GitHub by giving the following command:
 git clone https://github.com/JavierRamiroGarcia/NG-Tax.git
 ```
 
-Go to http://www.drive5.com/usearch/download.html and download the USEARCH linux version.
+Go to http://www.drive5.com/usearch/download.html and download the USEARCH linux version (usearch v8.1.1861_i86linux32).
 Make a copy of the file with the name usearch and place it in the bin folder of NG-Tax-v1.
 
 Downloading the database:
