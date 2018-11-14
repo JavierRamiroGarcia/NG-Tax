@@ -15,8 +15,8 @@ the biom file.\n
 \n
 -m mapping file containing metadata [txt]\n
 -t folder containing tax files \n
--f NG-Tax customized forward-primer database file\n
--r NG-Tax customized reverse-primer database file\n
+-f NG-Tax customized forward-primer database file for the region you want to predict\n
+-r NG-Tax customized reverse-primer database file for the region you want to predict\n
 -p position (1 to attach the predicted region after the OTU sequence and 2 to attach the predicted region before) \n
 \n
     Output:\n
