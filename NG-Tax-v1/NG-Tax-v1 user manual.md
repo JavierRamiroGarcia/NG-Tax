@@ -316,7 +316,7 @@ the biom file.
 
 
 ```
-region_16S_comparator.sh -m Mock_communities_V4.txt -t tax_files -f primer_F515_71nt_1mm_db -r primer_R806_70nt_1mm_db -p 1
+region_16S_comparator.sh -m Mock_communities_V4.txt -t tax_files -f primer_BSF784_76_nt_1mm_db -r primer_R1064_71_nt_1mm_db -p 1
 ```
 
 ```
@@ -328,8 +328,8 @@ region_16S_comparator.sh -m Mock_communities_V5V6.txt -t tax_files -f primer_F51
 
 **-m** mapping file address → Mock_communities_V4.txt or Mock_communities_V5V6.txt  
 **-t** folder containing the tax files → tax_files  
-**-f** forward primer database address for the predicted region (database adapted to the read length) → primer_F515_71nt_1mm_db  
-**-r** reverse primer database address for the predicted region (database adapted to the read length) → primer_R806_70nt_1mm_db  
+**-f** forward primer database address for the region you want to predict (database adapted to the read length) → primer_F515_71nt_1mm_db  
+**-r** reverse primer database address for the region you want to predict (database adapted to the read length) → primer_R806_70nt_1mm_db  
 **-p** position (1 to attach the predicted region after the OTU sequence and 2 to attach the predicted region before) → 1 or 2  
 
 
