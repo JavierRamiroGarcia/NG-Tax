@@ -141,7 +141,7 @@ END{ \
 }' $database_address | \
 awk '{ \
   if(substr($1,1,1)==">"){ \
-    if(substr($2,1,8)=="Bacteria"){ \
+    if(substr($2,1,7)=="Archaea" || substr($2,1,8)=="Bacteria"){ \
       p=1; \
     }; \
     if(p==1){ \
